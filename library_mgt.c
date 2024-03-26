@@ -15,7 +15,7 @@ struct book_module {
 struct member_module {
 	char member_id[10];
 	char name[20];
-	char address[100];
+	char address[50];
 	int phone_no;
 };
 
@@ -64,9 +64,33 @@ int main(){
 	printf("------------------\n");
 	
 
+	char temp_Char[2];
 	//initiate few starting values for ease of use
 	
-	//for (int i = 0; i < 5; i++){
+	for (int i = 0; i < 5; i++){
+		temp_Char[0] = '0' + (i+1);
+		temp_Char[1] = '\0';
+		strcpy(books[i].ISBN, "PESLIB00");
+		strcat(books[i].ISBN, temp_Char);
+		strcpy(books[i].title,"Book ");
+		strcat(books[i].title, temp_Char);
+		strcpy(books[i].author, "Author ");
+		strcat(books[i].author, temp_Char);
+		strcpy(books[i].genre, "Genre ");
+		strcat(books[i].genre, temp_Char);
+		books[i].quantity = i;
+		num_books++;
+
+		strcpy(members[i].member_id, "PESLIM00");
+		strcat(members[i].member_id, temp_Char);
+		strcpy(members[i].name, "Name ");
+		strcat(members[i].name, temp_Char);
+		strcpy(members[i].address, "Address ");
+		strcat(members[i].address, temp_Char);
+		members[i].phone_no = 666000 + i;
+		num_members++;
+	}
+
 
 
 	menu();
@@ -154,24 +178,19 @@ int add_book(){
 	
 
 	printf("Enter ISBN:");
-	scanf("%[^\n]", ISBN); getchar();
-	strcpy(books[num_books].ISBN, ISBN);
+	scanf("%[^\n]", books[num_books].ISBN); getchar();
 
 	printf("Enter Title:");
-	scanf("%[^\n]", title); getchar();
-	strcpy(books[num_books].title, title);
+	scanf("%[^\n]", books[num_books].title); getchar();
 
 	printf("Enter author:");
-	scanf("%[^\n]", author); getchar();
-	strcpy(books[num_books].author, author);
+	scanf("%[^\n]", books[num_books].author); getchar();
 
 	printf("Enter genre:");
-	scanf("%[^\n]", genre); getchar();
-	strcpy(books[num_books].genre, genre);
+	scanf("%[^\n]", books[num_books].genre); getchar();
 
 	printf("Enter quantity:");
-	scanf("%d", &quantity); getchar();
-	books[num_books].quantity = quantity;
+	scanf("%d", &books[num_books].quantity); getchar();
 	
 	num_books++;
 	return 0;
@@ -225,7 +244,7 @@ int delete_book(){
 
 int display_book(){
 	
-	printf("ISBN      |title               |author               |genre               |quantity   \n");
+	printf("ISBN      |title               |author              |genre               |quantity   \n");
 	for (int i = 0; i < num_books; i++){
 
 		if (strcmp(books[i].ISBN, "\0") == 0) {
@@ -233,7 +252,7 @@ int display_book(){
 		}
 	
 
-		printf("%s      |%s               |%s               |%s               |%d   \n", books[i].ISBN, books[i].title, books[i].author, books[i].genre, books[i].quantity);
+		printf("%-10s|%-20s|%-20s|%-20s|%d\n", books[i].ISBN, books[i].title, books[i].author, books[i].genre, books[i].quantity);
 
 	}
 	return 0;
@@ -275,20 +294,16 @@ int add_member(){
         int phone_no;
 
 	printf("Enter member ID:");
-	scanf("%s", member_id);getchar();
-	strcpy(members[num_members].member_id, member_id);
+	scanf("%[^\n]", members[num_members].member_id);getchar();
 
 	printf("Enter name:");
-	scanf("%s", name);getchar();
-	strcpy(members[num_members].name, name);
+	scanf("%[^\n]", members[num_members].name);getchar();
 
 	printf("Enter address:");
-	scanf("%s", address);getchar();
-	strcpy(members[num_members].address, address);
+	scanf("%[^\n]", members[num_members].address);getchar();
 
 	printf("Enter phone number:");
-	scanf("%d", &phone_no);getchar();
-	members[num_members].phone_no = phone_no;
+	scanf("%d", &members[num_members].phone_no);getchar();
 
 	num_members++;
 	return 0;
@@ -340,11 +355,11 @@ int delete_member(){
 }
 
 int display_members(){
-	printf("Member ID        |Name          |address          |phone number       |\n");
+	printf("Member ID |Name                |address             |phone number\n");
 	for (int i = 0; i < num_members; i++){
 		if (strcmp(members[i].member_id, "\0") == 0) continue;
 
-		printf("%s         |%s         |%s          |%d          \n", members[i].member_id, members[i].name, members[i].address, members[i].phone_no);
+		printf("%-10s|%-20s|%-20s|%d\n", members[i].member_id, members[i].name, members[i].address, members[i].phone_no);
 	}
 	
 	return 0;
@@ -434,10 +449,10 @@ int return_book(){
 }
 
 int display_history(){
-	printf("Transaction ID     |Member Id        |ISBN         |Issue date         |Return date\n");
+	printf("Transaction ID |Member Id        |ISBN         |Issue date         |Return date\n");
 
 	for (int i = 0; i < num_transactions;i++){
-		printf("%d          |%s              |%s           |%s                 |%s          \n", trans_detail[i].trans_id, trans_detail[i].member_id, trans_detail[i].ISBN, trans_detail[i].issue_date, trans_detail[i].return_date);
+		printf("%-14d|%-10s|%-10s|%-10s|%-10s\n", trans_detail[i].trans_id, trans_detail[i].member_id, trans_detail[i].ISBN, trans_detail[i].issue_date, trans_detail[i].return_date);
 	}
 	return 0;
 }
