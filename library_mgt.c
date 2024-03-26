@@ -1,6 +1,8 @@
 #include<stdio.h>
 #include<string.h>
 
+int char_input(char *);
+
 struct book_module {
 	char ISBN[10];
 	char title[20];
@@ -61,8 +63,30 @@ int main(){
 	printf("Welcome to Library\n");
 	printf("------------------\n");
 	
+
+	//initiate few starting values for ease of use
+	
+	//for (int i = 0; i < 5; i++){
+
+
 	menu();
 
+	return 0;
+}
+
+
+int char_input(char * ch){
+	int i = 0;
+	char input_char;
+	while((input_char = getchar()) != '\n' && input_char != EOF){
+		if (i >= 1) {
+			i++;
+			continue;
+		} 
+		*ch = input_char;
+		i++;
+	}
+	if (i > 1 || i == 0) *ch = 'w';
 	return 0;
 }
 
@@ -75,14 +99,14 @@ int menu(){
 		
 	do{	
 		printf("\n\nEnter Choice (in main menu):");
-		ch = getchar();
-		getchar();	
+		char_input(&ch);
 		switch(ch){
 			case 'b' : book_module(); break;
 			case 'm' : member_module(); break;
 			case 't' : trans_module(); break;
 			case 'e' : printf("Thank You!\n"); break;
-			default: printf("\n###########Enter correct Choice##########\n"); break;
+			case 'w' : printf("\n###########Enter correct Choice##########\n"); break;
+			default: break;
 		}	
 	}while (ch!='e');
 
@@ -102,15 +126,15 @@ int book_module(){
 	do {
 		
 		printf("\nEnter choice (in book module):");
-		ch = getchar();
-		getchar();
+		char_input(&ch);
 		switch(ch){
 			case 'a': add_book(); break;
 			case 'u': update_book(); break;
 			case 'd': delete_book(); break;
 			case 's': display_book(); break;
 			case 'e': printf("Going back to menu.....\n"); break;
-			default: printf("##########Enter correct Choice##########"); break;
+			case 'w':printf("\n###########Enter correct Choice##########\n"); break;
+			default: break;
 		}
 
 	}while (ch != 'e');
@@ -160,7 +184,6 @@ int update_book(){
 	getchar();
 	
 	for (int i = 0; i < num_books ; i++){
-		printf("%d %s %s \n", i, update_book_isbn, books[i].ISBN);
 		if (strcmp(update_book_isbn, books[i].ISBN) == 0){				
 			printf("Enter Title:");
 			scanf("%[^\n]", books[i].title); getchar();
@@ -227,15 +250,15 @@ int member_module(){
         do {
 
                 printf("\nEnter choice (in member module):");
-                ch = getchar();
-                getchar();
+                char_input(&ch);
                 switch(ch){
                         case 'a': add_member(); break;
                         case 'u': update_member(); break;
                         case 'd': delete_member(); break;
                         case 's': display_members(); break;
                         case 'e': printf("Going back to menu.....\n"); break;
-                        default: printf("##########Enter correct Choice##########"); break;
+			case 'w':printf("\n###########Enter correct Choice##########\n"); break;
+                        default: break;
                 }
 
         }while (ch != 'e');
@@ -341,14 +364,14 @@ int trans_module(){
         do {
 
                 printf("\nEnter choice (in transactions module):");
-                ch = getchar();
-                getchar();
+                char_input(&ch);
                 switch(ch){
                         case 'i': issue_book(); break;
                         case 'r': return_book(); break;
                         case 's': display_history(); break;
                         case 'e': printf("Going back to menu.....\n"); break;
-                        default: printf("##########Enter correct Choice##########"); break;
+			case 'w': printf("\n###########Enter correct Choice##########\n"); break;
+                        default: break;
                 }
 
         }while (ch != 'e');
@@ -359,41 +382,54 @@ int trans_module(){
 int issue_book(){
 	char issue_member_id[10];
 	char issue_book_id[10];
+	int member_found = 0;
 	
-	int trans_id;
-	
-	int checkpt;
-
 	printf("Enter member id to issue book:");
 	scanf("%s", issue_member_id); getchar();
-
 	printf("Enter book id to be issued:");
 	scanf("%s", issue_book_id); getchar();
 
 	for (int i = 0; i < num_members; i++){
 		if (strcmp(issue_member_id, members[i].member_id) == 0){
-			trans_detail[num_transactions].trans_id = 813000 + trans_id;
+			trans_detail[num_transactions].trans_id = 813001 + num_transactions;
 			strcpy(trans_detail[num_transactions].member_id, issue_member_id);
-		}
-		for (int j = 0; j < num_books; j++){
-			if (strcmp(issue_book_id, books[i].ISBN) == 0){
-				strcpy(trans_detail[num_transactions].ISBN, issue_book_id);
-				checkpt++;
-				break;
+	
+
+			for (int j = 0; j < num_books; j++){
+				if ((strcmp(issue_book_id, books[i].ISBN) == 0)){
+					strcpy(trans_detail[num_transactions].ISBN, issue_book_id);
+					break;
+				}
 			}
+			strcpy(trans_detail[num_transactions].issue_date, "01/01/2001");
+			strcpy(trans_detail[num_transactions].return_date, "--/--/----");
+			
+			num_transactions++;
+
+
+			break;
 		}
-		if (checkpt == 1) break;
 	}
-
-	strcpy(trans_detail[num_transactions].issue_date, "01/01/2001");
-	strcpy(trans_detail[num_transactions].issue_date, "--/--/----");
-
-	if (checkpt == 1) num_transactions++;
+	
 
 	return 0;
 }
 
 int return_book(){
+	
+	int return_trans_id;
+
+	printf("Enter transaction id to return book:");
+	scanf("%d", &return_trans_id);getchar();
+
+	for (int i = 0; i < num_transactions; i++){
+		if (return_trans_id == trans_detail[i].trans_id){
+			strcpy(trans_detail[i].return_date, "12/12/2024");
+			break;
+		}
+	}
+
+
 	return 0;
 }
 
@@ -401,7 +437,7 @@ int display_history(){
 	printf("Transaction ID     |Member Id        |ISBN         |Issue date         |Return date\n");
 
 	for (int i = 0; i < num_transactions;i++){
-		printf("%d          |%s              |%s           |%s                 |%s          \n", trans_detail[num_transactions].trans_id, trans_detail[num_transactions].member_id, trans_detail[num_transactions].ISBN, trans_detail[num_transactions].issue_date, trans_detail[num_transactions].return_date);
+		printf("%d          |%s              |%s           |%s                 |%s          \n", trans_detail[i].trans_id, trans_detail[i].member_id, trans_detail[i].ISBN, trans_detail[i].issue_date, trans_detail[i].return_date);
 	}
 	return 0;
 }
